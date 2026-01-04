@@ -2,12 +2,13 @@
 node_modules/
 .env
 
-# React
-frontend/node_modules/
-frontend/build/
-
 # Backend
-backend/node_modules/
+Backend/node_modules/
+Backend/.env
+
+# Frontend
+Frontend/node_modules/
+Frontend/build/
 
 # OS
 .DS_Store
