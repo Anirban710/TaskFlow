@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const auth = require("./middleware/auth");
@@ -44,7 +45,7 @@ app.get("/profile", auth, (req, res) => {
 
 // MongoDB connection
 mongoose
-  .connect("mongodb://127.0.0.1:27017/taskmanager")
+  .mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB connected");
   })
