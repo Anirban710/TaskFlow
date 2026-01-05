@@ -20,10 +20,7 @@ app.use(
   })
 );
 
-app.use(express.json());
-
-
-// ------------------- Middleware -------------------
+// ONLY ONCE
 app.use(express.json());
 
 // ------------------- Routes -------------------
