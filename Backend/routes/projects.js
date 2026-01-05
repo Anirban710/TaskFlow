@@ -5,25 +5,6 @@ const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-// Get project activity
-router.get("/:projectId/activity", auth, async (req, res) => {
-  try {
-    const Activity = require("../models/activity");
-
-    const activities = await Activity.find({
-      project: req.params.projectId,
-    })
-      .populate("user", "name")
-      .sort({ createdAt: -1 })
-      .limit(20);
-
-    res.json(activities);
-  } catch (error) {
-    console.error("ACTIVITY ERROR:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
 
 // -------------------- GET MY PROJECTS --------------------
 router.get("/", auth, async (req, res) => {
@@ -34,14 +15,20 @@ router.get("/", auth, async (req, res) => {
 
     res.json(projects);
   } catch (error) {
+    console.error("GET PROJECTS ERROR:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // -------------------- CREATE PROJECT --------------------
 router.post("/", auth, async (req, res) => {
   try {
     const { name } = req.body;
+
+    if (!name || name.trim() === "") {
+      return res.status(400).json({ message: "Project name is required" });
+    }
 
     const project = await Project.create({
       name,
@@ -56,7 +43,8 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// -------------------- ADD MEMBER --------------------
+
+// -------------------- ADD MEMBER TO PROJECT --------------------
 router.post("/:projectId/members", auth, async (req, res) => {
   try {
     const { email } = req.body;
@@ -66,6 +54,7 @@ router.post("/:projectId/members", auth, async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
+    // Only owner can add members
     if (project.owner.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not allowed" });
     }
@@ -89,7 +78,8 @@ router.post("/:projectId/members", auth, async (req, res) => {
   }
 });
 
-// -------------------- GET FULL BOARD --------------------
+
+// -------------------- GET FULL KANBAN BOARD --------------------
 router.get("/:projectId/board", auth, async (req, res) => {
   try {
     const project = await Project.findById(req.params.projectId);
