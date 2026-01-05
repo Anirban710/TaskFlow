@@ -1,26 +1,41 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const auth = require("./middleware/auth");
 
 const app = express();
 
-// ------------------- CORS -------------------
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "https://task-flow-umber-sigma.vercel.app",
-      "https://hoppscotch.io"
-    ],
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
-  })
-);
+// ------------------- CORS (Express 5 safe) -------------------
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    "http://localhost:3000",
+    "https://task-flow-umber-sigma.vercel.app",
+    "https://hoppscotch.io"
+  ];
 
-// ONLY ONCE
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
+// ------------------- Body Parser -------------------
 app.use(express.json());
 
 // ------------------- Routes -------------------
