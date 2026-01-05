@@ -7,13 +7,21 @@ const auth = require("./middleware/auth");
 const app = express();
 
 // ------------------- CORS -------------------
+const cors = require("cors");
+
 app.use(cors({
   origin: [
     "http://localhost:3000",
-    "https://task-flow-umber-sigma.vercel.app"
+    "https://task-flow-umber-sigma.vercel.app",
+    "https://hoppscotch.io"
   ],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+
+app.options("*", cors());
+
 
 // ------------------- Middleware -------------------
 app.use(express.json());
