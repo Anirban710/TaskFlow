@@ -7,8 +7,6 @@ const auth = require("./middleware/auth");
 const app = express();
 
 // ------------------- CORS -------------------
-const cors = require("cors");
-
 app.use(cors({
   origin: [
     "http://localhost:3000",
